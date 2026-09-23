@@ -612,6 +612,36 @@ button.chip:hover {
   font-weight: 500;
 }
 
+.password-field__wrap {
+  position: relative;
+  display: block;
+}
+
+.password-field__wrap .input {
+  padding-right: 2.85rem;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 0.45rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  width: 2.1rem;
+  height: 2.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+
+.password-toggle:hover {
+  color: var(--accent);
+}
+
 .form-error {
   background: rgba(180, 40, 40, 0.1);
   color: #b42318;

@@ -270,6 +270,37 @@ th {
   font: inherit;
 }
 
+.password-field__wrap {
+  position: relative;
+  display: block;
+}
+
+.password-field__wrap input {
+  padding-right: 2.75rem;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 0.4rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 0;
+}
+
+.password-toggle:hover {
+  color: var(--accent);
+}
+
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;

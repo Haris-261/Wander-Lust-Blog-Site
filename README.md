@@ -31,8 +31,7 @@ Blog-Site/
 
 ```bash
 cd backend
-cp .env.example .env
-# Edit .env with your MongoDB URI, JWT_SECRET, and admin credentials
+# Create backend/.env with your MongoDB URI, JWT_SECRET, and other secrets
 npm install
 npm run dev
 ```
@@ -75,8 +74,9 @@ Open http://localhost:5174 and sign in with the seeded admin account.
 | `JWT_SECRET` | Secret for signing tokens |
 | `ADMIN_EMAIL` | Seeded admin email |
 | `ADMIN_PASSWORD` | Seeded admin password |
-| `CLIENT_URL` | Frontend origin for CORS |
-| `ADMIN_URL` | Admin origin for CORS |
+| `CLIENT_URL` | Frontend origin for CORS (e.g. Vercel frontend URL) |
+| `ADMIN_URL` | Admin origin for CORS (e.g. Vercel admin URL) |
+| `CORS_ORIGINS` | Optional comma-separated extra allowed origins |
 | `CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name |
 | `CLOUDINARY_API_KEY` | Cloudinary API key |
 | `CLOUDINARY_API_SECRET` | Cloudinary API secret |
@@ -124,7 +124,50 @@ Vite only exposes variables prefixed with `VITE_`.
 | PUT | `/api/admin/posts/:id` | admin (multipart) |
 | DELETE | `/api/admin/posts/:id` | admin |
 
-Uploaded images are stored in `backend/uploads` and served at `/uploads/...`.
+Uploaded cover images go to Cloudinary (secure URLs stored on each post).
+
+## Deploy on Vercel
+
+Deploy **three separate Vercel projects** (one per folder). In each project set **Root Directory** to `frontend`, `admin`, or `backend`.
+
+### 1. Backend project (Root: `backend`)
+
+Uses `backend/vercel.json` + `backend/api/index.js`.
+
+Environment variables (same as `.env`):
+
+- `MONGODB_URI`, `JWT_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`
+- `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
+- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
+- `GOOGLE_CALLBACK_URL` = `https://YOUR_BACKEND.vercel.app/api/auth/google/callback`
+- `CLIENT_URL` = `https://YOUR_FRONTEND.vercel.app`
+- `ADMIN_URL` = `https://YOUR_ADMIN.vercel.app`
+
+### 2. Frontend project (Root: `frontend`)
+
+Uses `frontend/vercel.json` (SPA rewrite).
+
+Environment variables:
+
+- `VITE_API_URL` = `https://YOUR_BACKEND.vercel.app/api`
+- `VITE_ASSET_URL` = `https://YOUR_BACKEND.vercel.app`
+
+### 3. Admin project (Root: `admin`)
+
+Uses `admin/vercel.json`.
+
+Environment variables:
+
+- `VITE_API_URL` = `https://YOUR_BACKEND.vercel.app/api`
+- `VITE_ASSET_URL` = `https://YOUR_BACKEND.vercel.app`
+- `VITE_ADMIN_EMAIL`, `VITE_ADMIN_PASSWORD`
+
+### After deploy — Google Console
+
+Add production URLs:
+
+- Authorized JavaScript origins: your frontend URL
+- Authorized redirect URI: `https://YOUR_BACKEND.vercel.app/api/auth/google/callback`
 
 ## Security note
 

@@ -1,7 +1,7 @@
 import Post from '../models/Post.js';
 import User from '../models/User.js';
 
-const DEMO_POSTS = [
+export const DEMO_POSTS = [
   {
     title: 'Dawn Balloons Over Cappadocia',
     excerpt: 'Watch the valley turn gold as hundreds of balloons lift into a quiet Turkish morning.',
@@ -82,17 +82,13 @@ export const seedDemoPosts = async () => {
     return;
   }
 
-  const force = process.env.FORCE_DEMO_SEED === 'true';
-  const trending = await Post.countDocuments({ category: 'Trending', published: true });
-  const forYou = await Post.countDocuments({ category: 'For You', published: true });
-  const mostLoved = await Post.countDocuments({ category: 'Most Loved', published: true });
+  const total = await Post.countDocuments();
 
-  if (!force && trending >= 2 && forYou >= 2 && mostLoved >= 2) {
-    console.log('Demo section posts already present — skipping seed');
+  // Only seed when the database has no posts. Never wipe existing blogs on restart.
+  if (total > 0) {
+    console.log(`Posts already exist (${total}) — skipping demo seed`);
     return;
   }
-
-  await Post.deleteMany({});
 
   for (const post of DEMO_POSTS) {
     await Post.create({
@@ -104,3 +100,4 @@ export const seedDemoPosts = async () => {
 
   console.log(`Seeded ${DEMO_POSTS.length} demo blogs`);
 };
+

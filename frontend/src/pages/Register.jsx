@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import GoogleButton from '../components/GoogleButton';
+import PasswordField from '../components/PasswordField';
 
 export default function Register() {
   const { register } = useAuth();
@@ -41,6 +42,7 @@ export default function Register() {
               className="input"
               type="text"
               required
+              autoComplete="name"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
             />
@@ -51,21 +53,17 @@ export default function Register() {
               className="input"
               type="email"
               required
+              autoComplete="email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
             />
           </label>
-          <label>
-            Password
-            <input
-              className="input"
-              type="password"
-              required
-              minLength={6}
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-            />
-          </label>
+          <PasswordField
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            minLength={6}
+            autoComplete="new-password"
+          />
           <button className="btn btn--primary" type="submit" disabled={busy}>
             {busy ? 'Creating…' : 'Create account'}
           </button>
