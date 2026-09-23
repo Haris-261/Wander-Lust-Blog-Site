@@ -30,7 +30,14 @@ export default function Login() {
       await login(email, password);
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.message || err.message || 'Login failed');
+      if (!err.response) {
+        const api = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+        setError(
+          `Network error — cannot reach API (${api}). Check VITE_API_URL and that the backend allows this site in CORS (ADMIN_URL).`
+        );
+      } else {
+        setError(err.response?.data?.message || err.message || 'Login failed');
+      }
     } finally {
       setBusy(false);
     }

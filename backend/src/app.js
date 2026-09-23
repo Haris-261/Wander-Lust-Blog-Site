@@ -21,17 +21,46 @@ configureGoogleAuth();
 
 const app = express();
 
+const normalizeOrigin = (value = '') => {
+  const raw = String(value).trim();
+  if (!raw) return '';
+  try {
+    return new URL(raw).origin;
+  } catch {
+    return raw.replace(/\/$/, '');
+  }
+};
+
 const parseOrigins = () => {
   const fromList = (process.env.CORS_ORIGINS || '')
     .split(',')
-    .map((o) => o.trim())
+    .map((o) => normalizeOrigin(o))
     .filter(Boolean);
-  return [
+
+  const configured = [
     ...fromList,
-    process.env.CLIENT_URL || 'http://localhost:5173',
-    process.env.ADMIN_URL || 'http://localhost:5174',
+    normalizeOrigin(process.env.CLIENT_URL),
+    normalizeOrigin(process.env.ADMIN_URL),
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'https://wander-lust-blog-site-admin.vercel.app',
   ].filter(Boolean);
+
+  return [...new Set(configured)];
 };
+
+const isOriginAllowed = (origin) => {
+  if (!origin) return true;
+  const incoming = normalizeOrigin(origin);
+  const allowed = parseOrigins();
+  if (allowed.includes(incoming)) return true;
+  // Allow this project's Vercel preview/production frontends
+  if (/^https:\/\/wander-lust-blog-site[a-z0-9-]*\.vercel\.app$/i.test(incoming)) {
+    return true;
+  }
+  return false;
+};
+
 
 let bootPromise = null;
 
@@ -62,11 +91,11 @@ app.use(
 app.use(
   cors({
     origin(origin, callback) {
-      const allowed = parseOrigins();
-      if (!origin || allowed.includes(origin)) {
+      if (isOriginAllowed(origin)) {
         callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'));
+        console.warn('CORS blocked origin:', origin);
+        callback(null, false);
       }
     },
     credentials: true,
