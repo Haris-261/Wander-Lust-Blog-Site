@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-const envEmail = import.meta.env.VITE_ADMIN_EMAIL || '';
-const envPassword = import.meta.env.VITE_ADMIN_PASSWORD || '';
+const envEmail = import.meta.env.ADMIN_EMAIL || '';
+const envPassword = import.meta.env.ADMIN_PASSWORD || '';
 
 export default function Login() {
   const { user, loading, login } = useAuth();
@@ -26,12 +26,6 @@ export default function Login() {
     const email = (form.email || envEmail).trim();
     const password = form.password || envPassword;
 
-    if (envEmail && email.toLowerCase() !== envEmail.toLowerCase()) {
-      setBusy(false);
-      setError('Use the admin credentials configured in admin/.env');
-      return;
-    }
-
     try {
       await login(email, password);
       navigate('/');
@@ -46,13 +40,14 @@ export default function Login() {
     <div className="login-page">
       <form className="login-card" onSubmit={onSubmit}>
         <h1>Admin login</h1>
-        <p>Sign in with credentials from admin/.env</p>
+        <p>Sign in with your admin account.</p>
         {error && <p className="error">{error}</p>}
         <label>
           Email
           <input
             type="email"
             required
+            autoComplete="username"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
           />
@@ -63,6 +58,7 @@ export default function Login() {
             <input
               type={showPassword ? 'text' : 'password'}
               required
+              autoComplete="current-password"
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
             />

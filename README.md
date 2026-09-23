@@ -36,7 +36,7 @@ npm install
 npm run dev
 ```
 
-Default admin (keep `backend/.env` and `admin/.env` in sync):
+Default admin (set in `backend/.env` only):
 
 - Email: `Haris@gmail.com`
 - Password: `Haris@123`
@@ -102,11 +102,11 @@ VITE_ASSET_URL=http://localhost:5000
 ```
 VITE_API_URL=http://localhost:5000/api
 VITE_ASSET_URL=http://localhost:5000
-VITE_ADMIN_EMAIL=Haris@gmail.com
-VITE_ADMIN_PASSWORD=Haris@123
+ADMIN_EMAIL=Haris@gmail.com
+ADMIN_PASSWORD=Haris@123
 ```
 
-Vite only exposes variables prefixed with `VITE_`.
+`ADMIN_*` is allowed via `envPrefix` in `admin/vite.config.js` (prefill login). Keep the same email/password in **backend** `.env` so the seeded admin account matches.
 
 ## API overview
 
@@ -160,7 +160,7 @@ Environment variables:
 
 - `VITE_API_URL` = `https://YOUR_BACKEND.vercel.app/api`
 - `VITE_ASSET_URL` = `https://YOUR_BACKEND.vercel.app`
-- `VITE_ADMIN_EMAIL`, `VITE_ADMIN_PASSWORD`
+- `ADMIN_EMAIL`, `ADMIN_PASSWORD` (optional login prefill; mark as Config on Vercel)
 
 ### After deploy — Google Console
 
