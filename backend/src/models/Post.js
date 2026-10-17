@@ -27,6 +27,12 @@ const postSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    imageCaption: {
+      type: String,
+      trim: true,
+      maxlength: 240,
+      default: '',
+    },
     category: {
       type: String,
       required: [true, 'Category is required'],

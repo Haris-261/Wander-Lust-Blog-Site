@@ -1,26 +1,25 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 
 export default function AuthCallback() {
   const [searchParams] = useSearchParams();
   const { loginWithToken } = useAuth();
   const navigate = useNavigate();
-  const [error, setError] = useState('');
+  const token = searchParams.get('token');
+  const [error, setError] = useState(() =>
+    token ? '' : 'Google sign-in failed. No token received.'
+  );
 
   useEffect(() => {
-    const token = searchParams.get('token');
-    if (!token) {
-      setError('Google sign-in failed. No token received.');
-      return;
-    }
+    if (!token) return;
 
     loginWithToken(token)
       .then(() => navigate('/', { replace: true }))
       .catch(() => {
         setError('Google sign-in failed. Please try again.');
       });
-  }, [searchParams, loginWithToken, navigate]);
+  }, [token, loginWithToken, navigate]);
 
   return (
     <section className="section page-top">

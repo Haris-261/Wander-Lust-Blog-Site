@@ -103,7 +103,7 @@ export const getAdminPostById = async (req, res) => {
 
 export const createPost = async (req, res) => {
   try {
-    const { title, excerpt, content, category, tags, published } = req.body;
+    const { title, excerpt, content, category, tags, published, imageCaption } = req.body;
 
     if (!title || !excerpt || !content || !category) {
       return res.status(400).json({ message: 'Title, excerpt, content, and category are required' });
@@ -123,6 +123,7 @@ export const createPost = async (req, res) => {
       tags: parseTags(tags),
       published: published === 'false' || published === false ? false : true,
       coverImage,
+      imageCaption: imageCaption || '',
       author: req.user._id,
     });
 
@@ -138,13 +139,14 @@ export const updatePost = async (req, res) => {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: 'Post not found' });
 
-    const { title, excerpt, content, category, tags, published } = req.body;
+    const { title, excerpt, content, category, tags, published, imageCaption } = req.body;
 
     if (title !== undefined) post.title = title;
     if (excerpt !== undefined) post.excerpt = excerpt;
     if (content !== undefined) post.content = content;
     if (category !== undefined) post.category = category;
     if (tags !== undefined) post.tags = parseTags(tags);
+    if (imageCaption !== undefined) post.imageCaption = imageCaption;
     if (published !== undefined) {
       post.published = !(published === 'false' || published === false);
     }

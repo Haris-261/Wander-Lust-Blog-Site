@@ -19,7 +19,6 @@ export default function Blog() {
   }, []);
 
   useEffect(() => {
-    setLoading(true);
     api
       .get('/posts', { params: { category: category || undefined, search: search || undefined, page, limit: 9 } })
       .then((res) => {
@@ -31,6 +30,7 @@ export default function Blog() {
   }, [category, search, page]);
 
   const updateParam = (key, value) => {
+    setLoading(true);
     const next = new URLSearchParams(searchParams);
     if (value) next.set(key, value);
     else next.delete(key);

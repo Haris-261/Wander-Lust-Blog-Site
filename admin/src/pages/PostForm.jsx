@@ -8,6 +8,7 @@ const empty = {
   content: '',
   category: 'Trending',
   tags: '',
+  imageCaption: '',
   published: true,
 };
 
@@ -37,6 +38,7 @@ export default function PostForm() {
           content: p.content,
           category: CATEGORIES.includes(p.category) ? p.category : 'Trending',
           tags: (p.tags || []).join(', '),
+          imageCaption: p.imageCaption || '',
           published: p.published,
         });
         if (p.coverImage) setPreview(assetUrl(p.coverImage));
@@ -63,6 +65,7 @@ export default function PostForm() {
     data.append('content', form.content);
     data.append('category', form.category);
     data.append('tags', form.tags);
+    data.append('imageCaption', form.imageCaption);
     data.append('published', String(form.published));
     if (cover) data.append('cover', cover);
 
@@ -161,6 +164,16 @@ export default function PostForm() {
         <label>
           Cover image
           <input type="file" accept="image/*" onChange={onFile} />
+        </label>
+
+        <label>
+          Image caption
+          <input
+            maxLength={240}
+            placeholder="Describe the place shown in the cover image"
+            value={form.imageCaption}
+            onChange={(e) => setForm({ ...form, imageCaption: e.target.value })}
+          />
         </label>
 
         {preview && <img className="cover-preview" src={preview} alt="Cover preview" />}

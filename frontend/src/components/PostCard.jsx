@@ -13,7 +13,11 @@ export default function PostCard({ post, index = 0, compact = false }) {
     >
       <Link to={`/blog/${post.slug}`} className="post-card__media">
         {post.coverImage ? (
-          <img src={assetUrl(post.coverImage)} alt={post.title} loading="lazy" />
+          <img
+            src={assetUrl(post.coverImage)}
+            alt={post.imageCaption || post.title}
+            loading="lazy"
+          />
         ) : (
           <div className="post-card__placeholder" />
         )}

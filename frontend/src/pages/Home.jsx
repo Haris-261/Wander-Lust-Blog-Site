@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import api, { assetUrl } from '../api/client';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import PostCard from '../components/PostCard';
 
 function BlogSection({ title, subtitle, posts, loading }) {
@@ -45,9 +45,9 @@ export default function Home() {
     const load = async () => {
       try {
         const [t, f, m] = await Promise.all([
-          api.get('/posts', { params: { category: 'Trending', limit: 6 } }),
-          api.get('/posts', { params: { category: 'For You', limit: 6 } }),
-          api.get('/posts', { params: { category: 'Most Loved', limit: 6 } }),
+          api.get('/posts', { params: { category: 'Trending', limit: 9 } }),
+          api.get('/posts', { params: { category: 'For You', limit: 9 } }),
+          api.get('/posts', { params: { category: 'Most Loved', limit: 9 } }),
         ]);
         setTrending(t.data.posts);
         setForYou(f.data.posts);
@@ -172,7 +172,10 @@ export default function Home() {
             >
               <Link to={`/blog/${spotlight.slug}`} className="spotlight__media">
                 {spotlight.coverImage ? (
-                  <img src={assetUrl(spotlight.coverImage)} alt={spotlight.title} />
+                  <img
+                    src={assetUrl(spotlight.coverImage)}
+                    alt={spotlight.imageCaption || spotlight.title}
+                  />
                 ) : (
                   <div className="post-card__placeholder spotlight__placeholder" />
                 )}

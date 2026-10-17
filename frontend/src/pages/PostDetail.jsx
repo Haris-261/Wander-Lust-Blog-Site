@@ -10,7 +10,6 @@ export default function PostDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
     api
       .get(`/posts/${slug}`)
       .then((res) => setPost(res.data.post))
@@ -45,7 +44,7 @@ export default function PostDetail() {
     <article className="article">
       <div className="article__hero">
         {post.coverImage ? (
-          <img src={assetUrl(post.coverImage)} alt={post.title} />
+          <img src={assetUrl(post.coverImage)} alt={post.imageCaption || post.title} />
         ) : (
           <div className="article__hero-fallback" />
         )}
@@ -72,6 +71,9 @@ export default function PostDetail() {
 
       <div className="container article__body">
         <p className="article__excerpt">{post.excerpt}</p>
+        {post.imageCaption && (
+          <p className="article__caption">{post.imageCaption}</p>
+        )}
         <div className="article__content">
           {post.content.split('\n').map((para, i) =>
             para.trim() ? <p key={i}>{para}</p> : <br key={i} />
